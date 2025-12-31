@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Manshvi ❤️</title>
+
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+  font-family: 'Comic Sans MS', cursive;
+  overflow: hidden;
+  text-align: center;
+}
+
+#startScreen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+#startScreen button {
+  padding: 14px 28px;
+  font-size: 20px;
+  border-radius: 12px;
+  border: none;
+  background: #ff4d6d;
+  color: white;
+}
+
+#name {
+  margin-top: 20px;
+  font-size: 36px;
+  color: white;
+}
+
+.heart {
+  position: absolute;
+  font-size: 32px;
+  cursor: pointer;
+  animation: fall 4s linear;
+}
+
+@keyframes fall {
+  from { top: -40px; }
+  to { top: 100vh; }
+}
+
+#card {
+  display: none;
+  background: white;
+  width: 90%;
+  max-width: 340px;
+  margin: 80px auto;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+}
+
+#text, #finalText {
+  text-align: left;
+  font-size: 15px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+button {
+  padding: 10px 20px;
+  margin: 10px;
+  font-size: 18px;
+  border-radius: 10px;
+  border: none;
+}
+
+.yes { background:#ff4d6d; color:white; }
+.no { background:#ddd; }
+
+.gif {
+  width: 100%;
+  max-width: 250px;
+  margin: 10px auto;
+  display: none;
+}
+
+.spark {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  animation: boom 1s ease-out forwards;
+}
+
+@keyframes boom {
+  to {
+    transform: translate(var(--x), var(--y));
+    opacity: 0;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<audio id="music" loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<div id="startScreen">
+  <h1>Hey Manshvi 💖</h1>
+  <p>Tap to start the magic ✨</p>
+  <button onclick="start()">Start ❤️</button>
+</div>
+
+<div id="name">Manshvi ❤️</div>
+<p style="color:white;">Hearts caught: <span id="score">0</span></p>
+
+<div id="card">
+  <div id="text"></div>
+
+  <img id="yesGif" class="gif" src="yes.gif">
+  <img id="noGif" class="gif" src="no.gif">
+
+  <h3 id="question">Would you like to go out with me? 😊</h3>
+  <button class="yes" onclick="yes()">Yes ❤️</button>
+  <button class="no" onclick="no()">No 🙂</button>
+
+  <div id="finalText"></div>
+
+  <!-- MESSAGE BOX -->
+  <div id="replyBox" style="display:none; margin-top:15px;">
+    <p style="font-size:14px;">
+      You can write something if you want 💌
+    </p>
+
+    <textarea id="replyText"
+      placeholder="Type your message here..."
+      style="width:100%; height:80px;
+      border-radius:8px; padding:8px;">
+    </textarea>
+
+    <br>
+
+    <button onclick="sendFinalMessage()" style="margin-top:10px;">
+      Send 💖
+    </button>
+  </div>
+</div>
+
+<script>
+let score = 0;
+let started = false;
+let userAnswer = "";
+
+const intro = `hello...! Manshvi ...umm...
+mujhe kuch kehna tha ....
+mujhe.. tujhepe crush hai ....
+1 saal se jada se .....
+mai kya bolu samajh nhi arha ...
+sorry ...
+i love uuuuuu..... ❤️`;
+
+const yesMsg = `lga to nhi tha per .....
+thankuuuuuuuuu sooo muchhh ❤️
+i will try my best noww...
+bohot time lga tha app bnane me ....`;
+
+const noMsg = `umm koi baat nhi mai samajh sakta hu ...
+koi baat nhi ...
+shukriya app use karne ke liye ...
+friends hi rehte hai 🙂`;
+
+function start() {
+  document.getElementById("startScreen").style.display = "none";
+  document.getElementById("music").play();
+  started = true;
+}
+
+function createHeart() {
+  if (!started) return;
+  const h = document.createElement("div");
+  h.className = "heart";
+  h.innerHTML = "❤️";
+  h.style.left = Math.random()*90 + "vw";
+  h.onclick = () => {
+    score++;
+    document.getElementById("score").innerText = score;
+    h.remove();
+    if (score >= 5) showCard();
+  };
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),4000);
+}
+setInterval(createHeart, 900);
+
+function showCard() {
+  document.getElementById("card").style.display = "block";
+  typeText(intro, "text");
+}
+
+function typeText(txt, id) {
+  const el = document.getElementById(id);
+  el.innerHTML = "";
+  let i=0;
+  const t = setInterval(()=>{
+    el.innerHTML += txt[i++];
+    if (i>=txt.length) clearInterval(t);
+  },35);
+}
+
+function hideBtns() {
+  document.getElementById("question").style.display="none";
+  document.querySelector(".yes").style.display="none";
+  document.querySelector(".no").style.display="none";
+}
+
+function yes() {
+  hideBtns();
+  document.getElementById("yesGif").style.display = "block";
+  document.getElementById("music").play();
+  typeText(yesMsg, "finalText");
+  fireworks();
+
+  userAnswer = "YES ❤️";
+  document.getElementById("replyBox").style.display = "block";
+}
+
+function no() {
+  hideBtns();
+  document.getElementById("noGif").style.display = "block";
+  typeText(noMsg, "finalText");
+
+  userAnswer = "NO 🙂";
+  document.getElementById("replyBox").style.display = "block";
+}
+
+function sendFinalMessage() {
+  const msg = document.getElementById("replyText").value;
+
+  fetch("https://formspree.io/f/mykyrrlr", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      answer: userAnswer,
+      message: msg,
+      time: new Date().toLocaleString()
+    })
+  });
+
+  document.getElementById("replyBox").innerHTML =
+    "<p>Message sent 💕 Thank you for replying.</p>";
+}
+
+function fireworks() {
+  for(let i=0;i<20;i++){
+    const s=document.createElement("div");
+    s.className="spark";
+    s.style.background=`hsl(${Math.random()*360},100%,60%)`;
+    s.style.left="50%";
+    s.style.top="50%";
+    s.style.setProperty("--x",(Math.random()-0.5)*300+"px");
+    s.style.setProperty("--y",(Math.random()-0.5)*300+"px");
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(),1000);
+  }
+}
+</script>
+
+</body>
+</html>
